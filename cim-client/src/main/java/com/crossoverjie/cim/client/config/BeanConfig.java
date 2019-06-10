@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 /**
  * Function:bean 配置
  *
- * @author crossoverJie
+ * @author xuliang
  *         Date: 24/05/2018 15:55
  * @since JDK 1.8
  */

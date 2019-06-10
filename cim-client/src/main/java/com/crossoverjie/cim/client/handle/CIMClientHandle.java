@@ -7,15 +7,17 @@ import com.crossoverjie.cim.common.constant.Constants;
 import com.crossoverjie.cim.common.protocol.CIMRequestProto;
 import com.crossoverjie.cim.common.protocol.CIMResponseProto;
 import com.crossoverjie.cim.common.util.NettyAttrUtil;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.nio.ByteBuffer;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Function:
  *
- * @author crossoverJie
+ * @author xuliang
  *         Date: 16/02/2018 18:09
  * @since JDK 1.8
  */
@@ -65,11 +67,42 @@ public class CIMClientHandle extends SimpleChannelInboundHandler<CIMResponseProt
         super.userEventTriggered(ctx, evt);
     }
 
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
         //客户端和服务端建立连接时调用
         LOGGER.info("cim server connect success!");
+
+
+
+        ctx.pipeline().get(SslHandler.class).handshakeFuture().addListener(
+                new GenericFutureListener<Future<Channel>>() {
+                    @Override
+                    public void operationComplete(Future<Channel> future) throws Exception {
+                        if (future.isSuccess()) {
+                            LOGGER.info(">>>>>>>>>> ssl握手成功");
+                            byte[] array = new byte[]{(byte) 7d, 04};
+
+                            ByteBuffer bu = ByteBuffer.wrap(array);
+                            ctx.channel().writeAndFlush(bu);
+                        } else {
+                            LOGGER.error(">>>>>>>>>> ssl握手失败");
+                        }
+
+
+
+                        ctx.writeAndFlush(
+                                "Welcome to " + InetAddress.getLocalHost().getHostName() +
+                                        " secure chat service!\n");
+                        ctx.writeAndFlush(
+                                "Your session is protected by " +
+                                        ctx.pipeline().get(SslHandler.class).engine().getSession().getCipherSuite() +
+                                        " cipher suite.\n");
+
+                    }
+                });
+
     }
 
     @Override

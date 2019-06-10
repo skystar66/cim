@@ -24,4 +24,9 @@ public class RandomHandle implements RouteHandle {
 
         return values.get(offset);
     }
+
+    @Override
+    public String clearRoute() {
+        return null;
+    }
 }

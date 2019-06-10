@@ -3,7 +3,7 @@ package com.crossoverjie.cim.common.constant;
 /**
  * Function:常量
  *
- * @author crossoverJie
+ * @author xuliang
  *         Date: 28/03/2018 17:41
  * @since JDK 1.8
  */
@@ -39,6 +39,12 @@ public class Constants {
          * ping
          */
         public static final int PING = 3 ;
+
+        /**
+         * ssl conect
+         */
+        public static final int SSL_CON = 4 ;
+
     }
 
 

@@ -3,7 +3,7 @@ package com.crossoverjie.cim.common.util;
 /**
  * Function:
  *
- * @author crossoverJie
+ * @author xuliang
  *         Date: 22/05/2018 15:16
  * @since JDK 1.8
  */

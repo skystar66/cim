@@ -11,23 +11,25 @@ import com.crossoverjie.cim.server.config.AppConfiguration;
 import com.crossoverjie.cim.server.kit.ServerHeartBeatHandlerImpl;
 import com.crossoverjie.cim.server.util.SessionSocketHolder;
 import com.crossoverjie.cim.server.util.SpringBeanFactory;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.nio.ByteBuffer;
 
 /**
  * Function:
  *
- * @author crossoverJie
+ * @author xuliang
  *         Date: 17/05/2018 18:52
  * @since JDK 1.8
  */
@@ -37,6 +39,38 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
     private final static Logger LOGGER = LoggerFactory.getLogger(CIMServerHandle.class);
 
     private final MediaType mediaType = MediaType.parse("application/json");
+
+
+    @Override
+    public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+
+        ctx.pipeline().get(SslHandler.class).handshakeFuture().addListener(
+                new GenericFutureListener<Future<Channel>>() {
+                    @Override
+                    public void operationComplete(Future<Channel> future) throws Exception {
+                        if (future.isSuccess()) {
+                            LOGGER.info(">>>>>>>>>> ssl握手成功");
+                            byte[] array = new byte[]{(byte) 7d, 04};
+                            ByteBuffer bu = ByteBuffer.wrap(array);
+
+
+                            ctx.channel().writeAndFlush("success");
+                        } else {
+                            LOGGER.error(">>>>>>>>>> ssl握手失败");
+                        }
+                        ctx.writeAndFlush(
+                                "Welcome to " + InetAddress.getLocalHost().getHostName() +
+                                        " secure chat service!\n");
+                        ctx.writeAndFlush(
+                                "Your session is protected by " +
+                                        ctx.pipeline().get(SslHandler.class).engine().getSession().getCipherSuite() +
+                                        " cipher suite.\n");
+
+                    }
+                });
+    }
+
+
 
     /**
      * 取消绑定
@@ -59,9 +93,10 @@ public class CIMServerHandle extends SimpleChannelInboundHandler<CIMRequestProto
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
+            //todo READER_IDLE 有一段时间没有收到任何数据
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
 
-                LOGGER.info("定时检测客户端端是否存活");
+                LOGGER.info("定时检测客户端端是否存活>>>>>>>>>");
 
                 HeartBeatHandler heartBeatHandler = SpringBeanFactory.getBean(ServerHeartBeatHandlerImpl.class) ;
                 heartBeatHandler.process(ctx) ;

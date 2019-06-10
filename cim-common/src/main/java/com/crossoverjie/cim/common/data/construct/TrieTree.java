@@ -8,14 +8,14 @@ import java.util.List;
 /**
  * Function:字典树字符前缀模糊匹配
  *
- * @author crossoverJie
+ * @author xuliang
  *         Date: 2019/1/7 18:58
  * @since JDK 1.8
  */
 public class TrieTree {
 
     /**
-     * 大小写都可保存
+     * 大小写都可保存 因为有26个英文字母
      */
     private static final int CHILDREN_LENGTH = 26 * 2;
 
@@ -51,6 +51,7 @@ public class TrieTree {
         for (int i = 0; i < chars.length; i++) {
             char aChar = chars[i];
             int index;
+            //todo 判断是否为大写字母
             if (Character.isUpperCase(aChar)) {
                 index = aChar - UPPERCASE_STAR;
             } else {

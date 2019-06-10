@@ -9,13 +9,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.net.InetAddress;
 
 /**
- * @author crossoverJie
+ * @author xuliang
  */
 @SpringBootApplication
+@ComponentScan(basePackages = {"com.crossoverjie.cim.*"})
 public class CIMServerApplication implements CommandLineRunner{
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(CIMServerApplication.class);

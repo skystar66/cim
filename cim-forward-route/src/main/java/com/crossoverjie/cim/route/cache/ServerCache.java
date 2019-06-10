@@ -1,5 +1,7 @@
 package com.crossoverjie.cim.route.cache;
 
+import com.crossoverjie.cim.common.route.algorithm.RouteHandle;
+import com.crossoverjie.cim.route.controller.RouteController;
 import com.crossoverjie.cim.route.kit.ZKit;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,8 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Function: 服务器节点缓存
  *
- * @author crossoverJie
- *         Date: 2018/8/19 01:31
+ * @author xuliang
+ * Date: 2018/8/19 01:31
  * @since JDK 1.8
  */
 @Component
@@ -26,6 +28,8 @@ public class ServerCache {
 
     @Autowired
     private ZKit zkUtil;
+    @Autowired
+    RouteHandle routeHandle;
 
     private AtomicLong index = new AtomicLong();
 
@@ -42,6 +46,8 @@ public class ServerCache {
      */
     public void updateCache(List<String> currentChilds) {
         cache.invalidateAll();
+        //清除路由
+        routeHandle.clearRoute();
         for (String currentChild : currentChilds) {
             String key = currentChild.split("-")[1];
             addCache(key);

@@ -7,7 +7,7 @@ import com.crossoverjie.cim.client.util.SpringBeanFactory;
 /**
  * Function:自定义收到消息回调
  *
- * @author crossoverJie
+ * @author xuliang
  *         Date: 2019/1/6 17:49
  * @since JDK 1.8
  */

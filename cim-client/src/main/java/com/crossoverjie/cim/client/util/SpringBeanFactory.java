@@ -1,5 +1,7 @@
 package com.crossoverjie.cim.client.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class SpringBeanFactory implements ApplicationContextAware{
+	private static Logger logger = LoggerFactory.getLogger(SpringBeanFactory.class);
 	private static ApplicationContext context;
 	
 	public static <T> T getBean(Class<T> c){
@@ -21,6 +24,8 @@ public final class SpringBeanFactory implements ApplicationContextAware{
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		context = applicationContext;
+		logger.info(">>>>>>>>>>>>>>>>>> ApplicationContext start success！");
+
 	}
 	
 	

@@ -5,7 +5,7 @@ import com.crossoverjie.cim.common.data.construct.SortArrayMap;
 /**
  * Function:自定义排序 Map 实现
  *
- * @author crossoverJie
+ * @author xuliang
  * Date: 2019-02-27 00:38
  * @since JDK 1.8
  */
@@ -16,13 +16,13 @@ public class SortArrayMapConsistentHash extends AbstractConsistentHash {
     /**
      * 虚拟节点数量
      */
-    private static final int VIRTUAL_NODE_SIZE = 2 ;
+    private static final int VIRTUAL_NODE_SIZE = 2;
 
     @Override
     public void add(long key, String value) {
         for (int i = 0; i < VIRTUAL_NODE_SIZE; i++) {
             Long hash = super.hash("vir" + key + i);
-            sortArrayMap.add(hash,value);
+            sortArrayMap.add(hash, value);
         }
         sortArrayMap.add(key, value);
     }
@@ -39,4 +39,9 @@ public class SortArrayMapConsistentHash extends AbstractConsistentHash {
         return sortArrayMap.firstNodeValue(hash);
     }
 
+
+    @Override
+    protected void clear() {
+        sortArrayMap.clear();
+    }
 }

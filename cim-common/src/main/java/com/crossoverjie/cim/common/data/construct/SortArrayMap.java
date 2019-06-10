@@ -1,12 +1,14 @@
 package com.crossoverjie.cim.common.data.construct;
 
+import org.springframework.util.CollectionUtils;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
 /**
  * Function:根据 key 排序的 Map
  *
- * @author crossoverJie
+ * @author xuliang
  * Date: 2019-02-25 18:17
  * @since JDK 1.8
  */
@@ -30,10 +32,12 @@ public class SortArrayMap {
 
     /**
      * 写入数据
+     *
      * @param key
      * @param value
      */
     public void add(Long key, String value) {
+        //检查是否需要扩容  如果长度大于 旧的长度，则
         checkSize(size + 1);
         Node node = new Node(key, value);
         buckets[size++] = node;
@@ -41,6 +45,7 @@ public class SortArrayMap {
 
     /**
      * 校验是否需要扩容
+     *
      * @param size
      */
     private void checkSize(int size) {
@@ -54,15 +59,16 @@ public class SortArrayMap {
 
     /**
      * 顺时针取出数据
+     *
      * @param key
      * @return
      */
     public String firstNodeValue(long key) {
-        if (size == 0){
-            return null ;
+        if (size == 0) {
+            return null;
         }
         for (Node bucket : buckets) {
-            if (bucket == null){
+            if (bucket == null) {
                 break;
             }
             if (bucket.key >= key) {
@@ -89,6 +95,17 @@ public class SortArrayMap {
             }
         });
     }
+
+    /**
+     * clear
+     */
+    public void clear() {
+        if (buckets != null) {
+            buckets = null;
+            buckets = new Node[DEFAULT_SIZE];
+        }
+    }
+
 
     public void print() {
         for (Node bucket : buckets) {

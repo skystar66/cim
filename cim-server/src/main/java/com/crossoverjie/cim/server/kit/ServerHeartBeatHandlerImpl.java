@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 /**
  * Function:
- *
- * @author crossoverJie
+ * @desc: 服务端定期检查客户端是否存活
+ * @author xuliang
  * Date: 2019-01-20 17:16
  * @since JDK 1.8
  */
@@ -33,9 +33,11 @@ public class ServerHeartBeatHandlerImpl implements HeartBeatHandler {
     @Override
     public void process(ChannelHandlerContext ctx) throws Exception {
 
+        //todo 30s(指的是客户端 - 服务端 30s没有进行通信)
         long heartBeatTime = appConfiguration.getHeartBeatTime() * 1000;
-
+        //todo 最后与客户端通讯读取时间
         Long lastReadTime = NettyAttrUtil.getReaderTime(ctx.channel());
+        //todo 当前时间
         long now = System.currentTimeMillis();
         if (lastReadTime != null && now - lastReadTime > heartBeatTime){
             CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());

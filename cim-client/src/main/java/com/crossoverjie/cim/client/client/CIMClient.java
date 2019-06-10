@@ -31,7 +31,7 @@ import javax.annotation.PostConstruct;
 /**
  * Function:
  *
- * @author crossoverJie
+ * @author xuliang
  * Date: 22/05/2018 14:19
  * @since JDK 1.8
  */
@@ -70,7 +70,7 @@ public class CIMClient {
     @PostConstruct
     public void start() throws Exception {
 
-        //登录 + 获取可以使用的服务器 ip+port
+        //登录 + 获取可以使用的服务器 ip+port 此处采用的是hash一致性算法
         CIMServerResVO.ServerInfo cimServer = userLogin();
 
         //启动客户端
@@ -98,14 +98,15 @@ public class CIMClient {
         ChannelFuture future = null;
         try {
             future = bootstrap.connect(cimServer.getIp(), cimServer.getCimServerPort()).sync();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             errorCount++;
-
+            LOGGER.error("连接失败", e);
             if (errorCount >= configuration.getErrorCount()) {
-                LOGGER.error("链接失败次数达到上限[{}]次", errorCount);
+                LOGGER.error("链接失败次数达到上 限[{}]次", errorCount);
                 msgHandle.shutdown();
             }
-            LOGGER.error("连接失败", e);
+            //todo 重连
+//            startClient(cimServer);
         }
         if (future.isSuccess()) {
             LOGGER.info("启动 cim client 成功");
@@ -209,7 +210,7 @@ public class CIMClient {
      * @throws InterruptedException
      */
     public void close() throws InterruptedException {
-        if (channel != null){
+        if (channel != null) {
             channel.close();
         }
     }

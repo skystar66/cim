@@ -3,7 +3,7 @@ package com.crossoverjie.cim.common.pojo;
 /**
  * Function: 用户信息
  *
- * @author crossoverJie
+ * @author xuliang
  *         Date: 2018/12/24 02:33
  * @since JDK 1.8
  */

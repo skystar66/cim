@@ -8,28 +8,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
- * @author crossoverJie
+ * @author xuliang
  */
 @SpringBootApplication
-public class CIMClientApplication implements CommandLineRunner{
+@ComponentScan(basePackages = {"com.crossoverjie.cim.*"})
+public class CIMClientApplication implements CommandLineRunner {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(CIMClientApplication.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CIMClientApplication.class);
 
-	@Autowired
-	private ClientInfo clientInfo ;
-	public static void main(String[] args) {
+    @Autowired
+    private ClientInfo clientInfo;
+
+    public static void main(String[] args) {
         SpringApplication.run(CIMClientApplication.class, args);
-		LOGGER.info("启动 Client 服务成功");
-	}
+        LOGGER.info("启动 Client 服务成功");
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
-		Scan scan = new Scan() ;
-		Thread thread = new Thread(scan);
-		thread.setName("scan-thread");
-		thread.start();
-		clientInfo.saveStartDate();
-	}
+    @Override
+    public void run(String... args) throws Exception {
+        Scan scan = new Scan();
+        Thread thread = new Thread(scan);
+        thread.setName("scan-thread");
+        thread.start();
+        clientInfo.saveStartDate();
+    }
 }
